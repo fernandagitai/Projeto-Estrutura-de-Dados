@@ -7,6 +7,18 @@
 #include "CUnit/Basic.h"
 #include "auxiliar.h"
 
+void teste_pont_para_void(){
+    unsigned char *pont = (unsigned char*) malloc(sizeof(unsigned char));
+    int item=90;
+    *pont = item;  
+
+    CU_ASSERT(pont!=NULL);
+    CU_ASSERT_EQUAL(conteudo(pont),90);
+    
+    void *aux=pont_para_void(90);
+
+    CU_ASSERT_EQUAL(conteudo(pont),conteudo(aux));
+}
 
 void teste_enqueue(){ 
     node_arvore *new_node=(node_arvore*)malloc(sizeof(node_arvore));
@@ -29,7 +41,6 @@ void teste_enqueue(){
     CU_ASSERT_EQUAL(conteudo(new_node->byte), conteudo(test->head->byte));
 }
 
-
 void teste_cria_lista_invertida(){
     node_lista *novo_byte=(node_lista*)malloc(sizeof(node_lista));
     novo_byte->byte_comp=pont_para_void('*');
@@ -48,6 +59,29 @@ void teste_cria_lista_invertida(){
     CU_ASSERT(teste_fim->next==NULL);
     CU_ASSERT(teste_fim->previous==NULL);
     
+}
+
+void teste_eh_folha(){
+    node_arvore *head=(node_arvore*)malloc(sizeof(node_arvore));
+    head->byte=pont_para_void(10);
+    head->left=NULL;
+    head->right=NULL;
+
+    CU_ASSERT(head!=NULL);
+    CU_ASSERT_EQUAL(conteudo(head->byte),10);
+    CU_ASSERT(head->right==NULL);
+    CU_ASSERT(head->left==NULL);
+
+    int teste = eh_folha(head);
+    CU_ASSERT_EQUAL(teste,1);
+}
+
+void teste_conteudo(){
+    void *item = (char*)malloc(sizeof(char));
+    item=pont_para_void('X');
+
+    CU_ASSERT(item!=NULL);
+    CU_ASSERT_EQUAL(conteudo(item),'X');
 }
 
 int main()
@@ -85,7 +119,18 @@ int main()
 		CU_cleanup_registry();
 		return CU_get_error();
 	}
-	
+	if (NULL == CU_add_test(pSuite, "test - 3", teste_pont_para_void)) {
+		CU_cleanup_registry();
+		return CU_get_error();
+	}
+    if (NULL == CU_add_test(pSuite, "test - 4", teste_conteudo)) {
+		CU_cleanup_registry();
+		return CU_get_error();
+	}
+    if (NULL == CU_add_test(pSuite, "test - 5", teste_eh_folha)) {
+		CU_cleanup_registry();
+		return CU_get_error();
+	}
 	
 	// Run the tests and show the run summary
 	CU_basic_run_tests();
